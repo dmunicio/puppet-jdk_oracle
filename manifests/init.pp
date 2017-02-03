@@ -42,6 +42,7 @@ class jdk_oracle (
   $use_cache    = hiera('jdk_oracle::use_cache', false),
   $cache_source = 'puppet:///modules/jdk_oracle/',
   $jce          = hiera('jdk_oracle::jce', false),
+  $http_proxy    = false,
   $default_java = hiera('jdk_oracle::default_java', true)) {
   validate_integer($version)
 
@@ -67,7 +68,13 @@ class jdk_oracle (
   $java_download_uri = "http://download.oracle.com/otn-pub/java/jdk/${version}u${java_update}-b${java_build}/e9e7ea248e2c4826b92b3f075a80e441/jdk-${version}u${java_update}-linux-${arch}.rpm"
   $jce_download_uri = 'http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip'
   $installer_filename = inline_template('<%= File.basename(@java_download_uri) %>')
-  $wget_header = 'wget -c --no-cookies --no-check-certificate --header'
+  if ($http_proxy) {
+     $proxy_command = "-e http_proxy=${http_proxy} -e https_proxy=${http_proxy}"
+  }
+  else {
+     $proxy_command = ""
+  }
+  $wget_header = "wget -c ${proxy_command} --no-cookies --no-check-certificate --header"
   $cookie = "\"Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com; oraclelicense=accept-securebackup-cookie\""
 
   if ($use_cache) {

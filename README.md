@@ -106,6 +106,10 @@ Parameters:
 **default_java** (*boolean*)
 *- if true the module will set the installed JDK to be the default system java (default `true`.)*
 
+**http_proxy** (*string*)
+*- Optionally define a http_proxy*
+
+
 TODO:
 ---
 
